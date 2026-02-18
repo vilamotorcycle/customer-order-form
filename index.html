@@ -249,10 +249,8 @@ function computeTotal() {
 
     document.getElementById("total").innerText = "Total: ₱" + total;
 
-    // Show QR if total >= 500
     document.getElementById("qrSection").style.display = total >= 500 ? "block" : "none";
 
-    // Show summary
     const summaryContent = `
         <strong>Customer Info:</strong><br>
         Name: ${document.getElementById("customerName").value}<br>
