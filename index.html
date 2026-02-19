@@ -1,288 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Order Form</title>
-    <meta charset="UTF-8">
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            width: 520px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        h2, h3 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            margin-top: 15px;
-            width: 48%;
-            padding: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        #total {
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        #stockDisplay {
-            font-size: 14px;
-            color: red;
-            margin-top: 5px;
-        }
-
-        #summary {
-            background: #f0f0f0;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
-            display: none;
-        }
-
-        #summary h3 {
-            text-align: left;
-        }
-
-        #qrSection {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #qrSection img {
-            width: 200px;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
+  <title>Customer Order Form</title>
 </head>
 <body>
 
-<div class="container">
+<h2>Customer Order Form</h2>
 
-    <h2>Order Form</h2>
+<form id="orderForm">
 
-    <h3>Customer Information</h3>
+  <input type="text" id="customerName" placeholder="Full Name" required><br><br>
+  
+  <input type="text" id="customerAddress" placeholder="Address" required><br><br>
+  
+  <input type="email" id="customerEmail" placeholder="Email" required><br><br>
+  
+  <input type="tel" id="customerPhone" placeholder="Phone" required><br><br>
+  
+  <input type="text" id="category" placeholder="Category"><br><br>
+  
+  <input type="text" id="product" placeholder="Product"><br><br>
+  
+  <input type="number" id="quantity" placeholder="Quantity"><br><br>
+  
+  <input type="number" id="totalAmount" placeholder="Total"><br><br>
 
-    <label>Full Name</label>
-    <input type="text" id="customerName">
+  <button type="submit">Submit Order</button>
+  <button type="reset">Clear</button>
 
-    <label>Address</label>
-    <input type="text" id="customerAddress">
-
-    <label>Email</label>
-    <input type="email" id="customerEmail">
-
-    <label>Phone Number</label>
-    <input type="tel" id="customerPhone">
-
-    <h3>Order Details</h3>
-
-    <label>Category</label>
-    <select id="category" onchange="loadProducts()">
-        <option value="">Select Category</option>
-    </select>
-
-    <label>Product</label>
-    <select id="product" onchange="showPrice()">
-        <option value="">Select Product</option>
-    </select>
-
-    <label>Price</label>
-    <input type="text" id="price" readonly>
-
-    <div id="stockDisplay"></div>
-
-    <label>Quantity</label>
-    <input type="number" id="quantity">
-
-    <div class="button-group">
-        <button onclick="computeTotal()">Compute Total</button>
-        <button onclick="clearForm()">Clear Form</button>
-    </div>
-
-    <div id="total"></div>
-
-    <div id="summary">
-        <h3>Order Summary</h3>
-        <p id="summaryContent"></p>
-    </div>
-
-    <div id="qrSection" style="display:none;">
-        <h3>Scan QR to Pay</h3>
-        <img src="qr.png">
-    </div>
-
-</div>
+</form>
 
 <script>
-let productsData = {};
+const scriptURL = https://script.google.com/macros/s/AKfycbyNrTJGDXVw8_Y_TbEo15-6xAhsK8PhSmiYn_q3b2FIy76-J_Q_TVT_EDJO-nA9PTVxiQ/exec"";
 
-fetch("products.csv")
-.then(response => response.text())
-.then(data => {
-    const rows = data.split("\n").slice(1);
-    rows.forEach(row => {
-        const columns = row.split(",");
-        const category = columns[0]?.trim().replace(/"/g,"");
-        const name = columns[1]?.trim().replace(/"/g,"");
-        const price = parseFloat(columns[2]);
-        const stock = parseInt(columns[3]);
+document.getElementById("orderForm").addEventListener("submit", function(e) {
+  e.preventDefault();
 
-        if (!productsData[category]) productsData[category] = [];
-        productsData[category].push({ name, price, stock });
-    });
-    loadCategories();
-})
-.catch(error => console.log("Error loading CSV:", error));
+  const formData = {
+    name: document.getElementById("customerName").value,
+    address: document.getElementById("customerAddress").value,
+    email: document.getElementById("customerEmail").value,
+    phone: document.getElementById("customerPhone").value,
+    category: document.getElementById("category").value,
+    product: document.getElementById("product").value,
+    quantity: document.getElementById("quantity").value,
+    total: document.getElementById("totalAmount").value
+  };
 
-function loadCategories() {
-    const categoryDropdown = document.getElementById("category");
-    for (let category in productsData) {
-        let option = document.createElement("option");
-        option.value = category;
-        option.text = category;
-        categoryDropdown.appendChild(option);
-    }
-}
-
-function loadProducts() {
-    const category = document.getElementById("category").value;
-    const productDropdown = document.getElementById("product");
-    productDropdown.innerHTML = "<option value=''>Select Product</option>";
-    document.getElementById("price").value = "";
-    document.getElementById("stockDisplay").innerText = "";
-    document.getElementById("quantity").value = "";
-
-    if (!category) return;
-
-    productsData[category].forEach((item, index) => {
-        let option = document.createElement("option");
-        option.value = index;
-
-        if (item.stock <= 0) {
-            option.text = item.name + " (Out of Stock)";
-            option.disabled = true;
-        } else {
-            let stockNote = item.stock <=3 ? " (Low Stock)" : "";
-            option.text = item.name + " (Stock: " + item.stock + ")" + stockNote;
-        }
-
-        productDropdown.appendChild(option);
-    });
-}
-
-function showPrice() {
-    const category = document.getElementById("category").value;
-    const index = document.getElementById("product").value;
-    if (index === "") return;
-
-    const product = productsData[category][index];
-
-    document.getElementById("price").value = product.price;
-    let stockNote = product.stock <=3 ? " (Low Stock)" : "";
-    document.getElementById("stockDisplay").innerText = "Available Stock: " + product.stock + stockNote;
-
-    const quantityInput = document.getElementById("quantity");
-    quantityInput.min = 1;
-    quantityInput.max = product.stock;
-    quantityInput.value = 1;
-}
-
-function computeTotal() {
-    const category = document.getElementById("category").value;
-    const productIndex = document.getElementById("product").value;
-    const quantity = parseInt(document.getElementById("quantity").value);
-
-    if (!category || productIndex === "") {
-        alert("Please select product.");
-        return;
-    }
-
-    const product = productsData[category][productIndex];
-
-    if (quantity > product.stock) {
-        alert("Not enough stock available!");
-        return;
-    }
-
-    const total = product.price * quantity;
-
-    document.getElementById("total").innerText = "Total: ₱" + total;
-
-    document.getElementById("qrSection").style.display = total >= 500 ? "block" : "none";
-
-    const summaryContent = `
-        <strong>Customer Info:</strong><br>
-        Name: ${document.getElementById("customerName").value}<br>
-        Address: ${document.getElementById("customerAddress").value}<br>
-        Email: ${document.getElementById("customerEmail").value}<br>
-        Phone: ${document.getElementById("customerPhone").value}<br><br>
-        <strong>Order:</strong><br>
-        Category: ${category}<br>
-        Product: ${product.name}<br>
-        Quantity: ${quantity}<br>
-        Unit Price: ₱${product.price}<br>
-        Total: ₱${total}
-    `;
-    const summaryDiv = document.getElementById("summary");
-    document.getElementById("summaryContent").innerHTML = summaryContent;
-    summaryDiv.style.display = "block";
-}
-
-function clearForm() {
-    document.getElementById("customerName").value = "";
-    document.getElementById("customerAddress").value = "";
-    document.getElementById("customerEmail").value = "";
-    document.getElementById("customerPhone").value = "";
-    document.getElementById("category").value = "";
-    document.getElementById("product").innerHTML = "<option value=''>Select Product</option>";
-    document.getElementById("price").value = "";
-    document.getElementById("quantity").value = "";
-    document.getElementById("stockDisplay").innerText = "";
-    document.getElementById("total").innerText = "";
-    document.getElementById("qrSection").style.display = "none";
-    document.getElementById("summary").style.display = "none";
-}
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    alert("Order submitted successfully!");
+    document.getElementById("orderForm").reset();
+  })
+  .catch(error => alert("Error submitting order"));
+});
 </script>
 
 </body>
